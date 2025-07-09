@@ -1,0 +1,73 @@
+{
+  "name": "backend",
+  "version": "0.0.1",
+  "private": true,
+  "nx": {
+    "sourceRoot": "packages/backend/src",
+    "projectType": "application",
+    "targets": {
+      "build": {
+        "executor": "@nx/esbuild:esbuild",
+        "outputs": [
+          "{options.outputPath}"
+        ],
+        "defaultConfiguration": "production",
+        "options": {
+          "platform": "node",
+          "outputPath": "dist/backend",
+          "format": [
+            "cjs"
+          ],
+          "bundle": false,
+          "main": "packages/backend/src/main.ts",
+          "tsConfig": "packages/backend/tsconfig.app.json",
+          "assets": [
+            "packages/backend/src/assets"
+          ],
+          "esbuildOptions": {
+            "sourcemap": true,
+            "outExtension": {
+              ".js": ".js"
+            }
+          }
+        },
+        "configurations": {
+          "development": {},
+          "production": {
+            "esbuildOptions": {
+              "sourcemap": false,
+              "outExtension": {
+                ".js": ".js"
+              }
+            }
+          }
+        }
+      },
+      "serve": {
+        "continuous": true,
+        "executor": "@nx/js:node",
+        "defaultConfiguration": "development",
+        "dependsOn": [
+          "build"
+        ],
+        "options": {
+          "buildTarget": "backend:build",
+          "runBuildTargetDependencies": false
+        },
+        "configurations": {
+          "development": {
+            "buildTarget": "backend:build:development"
+          },
+          "production": {
+            "buildTarget": "backend:build:production"
+          }
+        }
+      },
+      "test": {
+        "options": {
+          "passWithNoTests": true
+        }
+      }
+    }
+  }
+}
