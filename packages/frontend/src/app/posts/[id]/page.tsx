@@ -5,7 +5,7 @@ type Props = {
 };
 
 export default async function PostPage({ params }: Props) {
-  const { id } = params;
+  const { id } = await params;
 
   const res = await fetch(`http://localhost:4000/post/${id}`);
 

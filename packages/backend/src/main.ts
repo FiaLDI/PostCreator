@@ -79,11 +79,11 @@ app.post('/generate', async(c) => {
         const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
             method: "POST",
             headers: {
-                "Authorization": `Bearer ${process.env.OPENROUTER_API_KEY}`,
+                "Authorization": `Bearer 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`,
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({
-                model: "tngtech/deepseek-r1t2-chimera:free",  // здесь модель DeepSeek-R1
+                model: "upstage/solar-pro-3:free",  // здесь модель DeepSeek-R1
                 messages: [
                     { role: "system", content: `Ты блогер, пиши интересно и структурировано. Пиши коротко и по делу.  Формат ответа строго в JSON: [{"title": "...", "content": "..."}, ..., {"title": "...", "content": "..."}] без комментариев и переносов.` },
                     { role: "user", content: `Напиши 5 блог-постов на тему: "${title}"` }

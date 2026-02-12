@@ -1,7 +1,7 @@
-import Navbar from '@/components/layout/NavBar';
+
+import Navbar from '@/widgets/navbar/ui/NavBar';
 import './global.css';
 import { ToastContainer } from 'react-toastify';
-import FooterNav from '@/components/layout/Footer';
 
 export const metadata = {
   title: 'PostCreator',
@@ -17,11 +17,10 @@ export default function RootLayout({
     <html lang="en">
       <body className='bg-[#313131] w-screen h-screen'>
         <header className='bg-[#181818]'><Navbar /></header>
-        <div className="bg-[#313131] m-auto max-w-[1440px] p-5 rounded-md  min-w-screen min-h-screen">
+        <div className="bg-[#313131] m-auto max-w-[1440px] p-5 rounded-md">
           {children}
         </div>
         <ToastContainer position="bottom-right" autoClose={2000} theme="dark" />
-        <footer className='bg-[#181818]'><FooterNav /></footer>
       </body>
     </html>
   );
