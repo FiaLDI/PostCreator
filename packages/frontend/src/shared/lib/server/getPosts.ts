@@ -1,4 +1,4 @@
-import { Posts } from "@/features/posts/types";
+import { Posts } from "@/entity/posts";
 
 export async function getPosts(): Promise<Posts[]> {
   try {
