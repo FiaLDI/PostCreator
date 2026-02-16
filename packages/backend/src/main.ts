@@ -5,10 +5,12 @@ import { posts } from './config/schema';
 import { cors } from 'hono/cors';
 import { eq } from 'drizzle-orm';
 
+console.log(process.env.OPENROUTER_API_KEY)
+
 const app = new Hono();
 
 app.use('*', cors({
-    origin: 'http://localhost:4200', // можно указать домен вместо *, если хочешь ограничить
+    origin: 'http://localhost:4200',
     allowMethods: ['GET', 'POST', 'OPTIONS'],
     allowHeaders: ['Content-Type'],
 }));
@@ -59,7 +61,7 @@ app.post('/post', async(c) => {
     try {   
         const { title, content } = await c.req.json();
         console.log("title:", title, "content:", content);
-        await db.insert(posts).values({  name: title, text: content });
+        await db.insert(posts).values({  title: title, content: content });
         return c.json({ message: 'success added' });
     } catch (err) {
         if (err instanceof Error) {
@@ -79,7 +81,7 @@ app.post('/generate', async(c) => {
         const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
             method: "POST",
             headers: {
-                "Authorization": `Bearer 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`,
+                "Authorization": `Bearer ${process.env.OPENROUTER_API_KEY}`,
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({
