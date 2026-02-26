@@ -4,6 +4,7 @@ import { db } from './config/db';
 import { posts } from './config/schema';
 import { cors } from 'hono/cors';
 import { eq } from 'drizzle-orm';
+import { PostService } from './service/post.service';
 
 console.log(process.env.OPENROUTER_API_KEY)
 
@@ -15,10 +16,11 @@ app.use('*', cors({
     allowHeaders: ['Content-Type'],
 }));
 
+const PostServiceClass = new PostService(db, posts);
+
 app.get('/post', async (c) => {
   try {
-    const allPosts = await db.select().from(posts);
-    return c.json(allPosts);
+    return c.json(PostServiceClass.getAllPosts());
   } catch (err) {
     if (err instanceof Error) {
         return c.json({ error: err.message }, 400);
@@ -36,10 +38,7 @@ app.get('/post/:id', async (c) => {
     if (isNaN(Number(id))) {
         return c.json({ error: 'Invalid post ID' }, 400);
     }
-    const result = await db
-        .select()
-        .from(posts)
-        .where(eq(posts.id, Number(id)))
+    const result = await PostServiceClass.getPost(Number(id))
     
     const post = result[0];
 
@@ -60,8 +59,8 @@ app.get('/post/:id', async (c) => {
 app.post('/post', async(c) => {
     try {   
         const { title, content } = await c.req.json();
-        console.log("title:", title, "content:", content);
-        await db.insert(posts).values({  title: title, content: content });
+
+        await PostServiceClass.addPost({title, content});
         return c.json({ message: 'success added' });
     } catch (err) {
         if (err instanceof Error) {
@@ -72,11 +71,9 @@ app.post('/post', async(c) => {
     }
 })
 
-
 app.post('/generate', async(c) => {
     try {   
         const { title } = await c.req.json();
-        console.log('Генерация поста по теме:', title);
 
         const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
             method: "POST",
@@ -96,9 +93,7 @@ app.post('/generate', async(c) => {
         const data = await response.json() as {
             choices?: { message?: { content?: string } }[];
         };
-
-        console.log(JSON.stringify(data, null, 2));
-        console.log(data.choices?.[0]?.message?.content)
+        
         return c.json({ post: data.choices?.[0]?.message?.content || "Ошибка генерации текста." });
     } catch (err) {
         if (err instanceof Error) {
