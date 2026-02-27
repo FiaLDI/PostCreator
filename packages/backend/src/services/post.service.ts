@@ -1,6 +1,6 @@
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
 import { eq } from "drizzle-orm";
-import { posts } from "../config/schema";
+import { posts } from "../lib/db";
 
 export class PostService {
     constructor(
