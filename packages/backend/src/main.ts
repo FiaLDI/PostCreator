@@ -5,10 +5,12 @@ import { posts } from './config/schema';
 import { cors } from 'hono/cors';
 import { eq } from 'drizzle-orm';
 
+console.log(process.env.OPENROUTER_API_KEY)
+
 const app = new Hono();
 
 app.use('*', cors({
-    origin: 'http://localhost:4200', // можно указать домен вместо *, если хочешь ограничить
+    origin: 'http://localhost:4200',
     allowMethods: ['GET', 'POST', 'OPTIONS'],
     allowHeaders: ['Content-Type'],
 }));
@@ -59,7 +61,7 @@ app.post('/post', async(c) => {
     try {   
         const { title, content } = await c.req.json();
         console.log("title:", title, "content:", content);
-        await db.insert(posts).values({  name: title, text: content });
+        await db.insert(posts).values({  title: title, content: content });
         return c.json({ message: 'success added' });
     } catch (err) {
         if (err instanceof Error) {
@@ -83,7 +85,7 @@ app.post('/generate', async(c) => {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({
-                model: "tngtech/deepseek-r1t2-chimera:free",  // здесь модель DeepSeek-R1
+                model: "upstage/solar-pro-3:free",  // здесь модель DeepSeek-R1
                 messages: [
                     { role: "system", content: `Ты блогер, пиши интересно и структурировано. Пиши коротко и по делу.  Формат ответа строго в JSON: [{"title": "...", "content": "..."}, ..., {"title": "...", "content": "..."}] без комментариев и переносов.` },
                     { role: "user", content: `Напиши 5 блог-постов на тему: "${title}"` }
